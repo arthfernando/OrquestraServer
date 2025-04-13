@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"painellembretes/models"
+	"painellembretes/rabbitmq"
 	"painellembretes/reminder"
 	"painellembretes/sse"
 
@@ -8,15 +10,14 @@ import (
 )
 
 var (
-	ch = make(chan string)
+	ch = make(chan models.Reminder)
 )
 
 func SetRoutes() {
+	go rabbitmq.ConsumeMessage(ch)
 	r := gin.Default()
 
 	r.POST("/send", reminder.SendReminder)
-	// r.GET("/", reminder.ReceiveReminder)
-	r.POST("/event-stream", sse.PostEventStream(ch))
 	r.GET("/event-stream", sse.GetEventStream(ch))
 
 	r.Run(":3000")
