@@ -19,6 +19,7 @@ func SendReminder(c *gin.Context) {
 		})
 	}
 
+	// TODO: Change to WebSocket
 	err = rabbitmq.SendMessage(reminder)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -33,6 +34,6 @@ func SendReminder(c *gin.Context) {
 	})
 }
 
-func ReceiveReminder(c *gin.Context) {
-	rabbitmq.ConsumeMessage()
-}
+// func ReceiveReminder(c *gin.Context) {
+// 	rabbitmq.ConsumeMessage()
+// }

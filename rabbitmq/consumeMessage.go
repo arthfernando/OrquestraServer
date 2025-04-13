@@ -5,19 +5,25 @@ import (
 	"log"
 	"painellembretes/config"
 	"painellembretes/models"
-	"painellembretes/shared"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func ConsumeMessage() {
+// func ConsumeMessage() (<-chan amqp.Delivery, error) {
+func ConsumeMessage(bodyMessage chan models.Reminder) {
 	rabbitmqUrl := config.Get("RABBITMQ_URL")
 	conn, err := amqp.Dial(rabbitmqUrl)
-	shared.FailOnError(err, "Failed to connect to RabbitMQ")
+	// shared.FailOnError(err, "Failed to connect to RabbitMQ")
+	// if err != nil {
+	// 	return nil, errors.New("failed to connect to RabbitMQ")
+	// }
 	defer conn.Close()
 
 	ch, err := conn.Channel()
-	shared.FailOnError(err, "Failed to open RabbitMQ channel")
+	// shared.FailOnError(err, "Failed to open RabbitMQ channel")
+	// if err != nil {
+	// 	return nil, errors.New("failed to open RabbitMQ channel")
+	// }
 	defer ch.Close()
 
 	q, err := ch.QueueDeclare(
@@ -28,7 +34,10 @@ func ConsumeMessage() {
 		false,
 		nil,
 	)
-	shared.FailOnError(err, "Failed to declare RabbitMQ queue")
+	// shared.FailOnError(err, "Failed to declare RabbitMQ queue")
+	// if err != nil {
+	// 	return nil, errors.New("failed to declare RabbitMQ queue")
+	// }
 
 	msgs, err := ch.Consume(
 		q.Name,
@@ -39,9 +48,14 @@ func ConsumeMessage() {
 		false,
 		nil,
 	)
-	shared.FailOnError(err, "Failed to register RabbitMQ consumer")
+	// shared.FailOnError(err, "Failed to register RabbitMQ consumer")
+	// if err != nil {
+	// 	return nil, errors.New("failed to register RabbitMQ consumer")
+	// }
 
 	consumerRoutine := make(chan bool)
+
+	// return msgs, nil
 
 	go func() {
 		for d := range msgs {
@@ -52,6 +66,7 @@ func ConsumeMessage() {
 				return
 			}
 			log.Printf("Received message: %s", reminder)
+			bodyMessage <- reminder
 		}
 	}()
 
