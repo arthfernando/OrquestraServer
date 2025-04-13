@@ -6,6 +6,7 @@ import (
 	"painellembretes/reminder"
 	"painellembretes/sse"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,5 +21,6 @@ func SetRoutes() {
 	r.POST("/send", reminder.SendReminder)
 	r.GET("/event-stream", sse.GetEventStream(ch))
 
+	r.Use(cors.Default())
 	r.Run(":3000")
 }
