@@ -6,11 +6,12 @@ import (
 	"painellembretes/config"
 	"painellembretes/models"
 	"painellembretes/shared"
+	"painellembretes/sse"
 
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
-func ConsumeMessage(rmqMessage chan models.Reminder) {
+func ConsumeMessage(hub *sse.SSEHub) {
 	rabbitmqUrl := config.Get("RABBITMQ_URL")
 	conn, err := amqp.Dial(rabbitmqUrl)
 	shared.FailOnError(err, "Failed to connect to RabbitMQ")
@@ -53,7 +54,7 @@ func ConsumeMessage(rmqMessage chan models.Reminder) {
 				log.Printf("[ERR] Decoding message: %s", err.Error())
 				return
 			}
-			rmqMessage <- reminder
+			hub.Broadcast <- reminder
 		}
 	}()
 
