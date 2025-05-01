@@ -1,7 +1,6 @@
 package routes
 
 import (
-	"painellembretes/models"
 	"painellembretes/rabbitmq"
 	"painellembretes/reminder"
 	"painellembretes/sse"
@@ -9,10 +8,6 @@ import (
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-)
-
-var (
-	ch = make(chan models.Reminder)
 )
 
 func SetRoutes() {
