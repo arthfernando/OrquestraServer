@@ -28,7 +28,5 @@ func SendReminder(c *gin.Context) {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Reminder sent",
-	})
+	c.Status(http.StatusOK)
 }

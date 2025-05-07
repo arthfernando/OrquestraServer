@@ -1,8 +1,8 @@
 package sse
 
 import (
-	"fmt"
 	"io"
+	"log"
 
 	"github.com/gin-gonic/gin"
 )
@@ -19,7 +19,7 @@ func GetEventStream(hub *SSEHub) gin.HandlerFunc {
 
 		c.Stream(func(io.Writer) bool {
 			if msg, ok := <-client; ok {
-				fmt.Println("Consumed: ", msg)
+				log.Println("Emit SSE message")
 				c.SSEvent("message", msg)
 				return true
 			}

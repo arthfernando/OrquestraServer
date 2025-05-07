@@ -48,6 +48,5 @@ func SendMessage(reminder models.Reminder) error {
 		},
 	)
 	shared.FailOnError(err, "Failed to publish message")
-	log.Printf("[x] Message sent: %s", reminder)
 	return nil
 }
